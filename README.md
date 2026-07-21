@@ -1,39 +1,40 @@
 # P&C Claims Analytics & Actuarial Reserving Engine
 
-A production-grade Python analytics engine and business analysis specification for Property & Casualty (P&C) claims reserving, loss development triangles, ChainLadder actuarial projections, and Loss Ratio monitoring across multiple lines of business (Commercial Property, Private Motor).
+A production-grade Python analytics engine and business analysis specification for Property & Casualty (P&C) claims reserving, loss development triangles, ChainLadder & Bornhuetter-Ferguson actuarial projections, and Loss Ratio monitoring across Commercial Property and Private Motor portfolios.
 
 ---
 
-## 📊 Business Problem & Executive Summary
+## 📸 Empirical Proof of Execution & Visual Deliverables
 
-In P&C insurance, claims incurred in a given policy year often take multiple years to settle completely. Finance, Risk, and Actuarial teams require reliable estimates of **Ultimate Claims** and **Incurred But Not Reported (IBNR)** reserves to maintain Solvency II capital adequacy and IFRS 17 compliance.
+### 1. Loss Development Triangle Heatmap (£ Millions)
+![Loss Development Triangle](outputs/claims_triangle_heatmap.png)
 
-This project delivers:
-- **Loss Development Triangles:** Paid and Incurred claims development matrices across 5 accident years (2019–2023) and 5 development periods.
-- **ChainLadder Reserving:** Automated calculation of Loss Development Factors (LDF), Cumulative Development Factors (CDF), and IBNR reserve estimates.
-- **Loss Ratio Trend Analysis:** Projected Ultimate Loss Ratio ($\text{Ultimate Claims} / \text{Earned Premium}$) tracking underwriting profitability across Commercial Property and Private Motor portfolios.
-- **Formal BA Artefacts:** Complete **[Business Requirements Document (BRD)](docs/BRD.md)** detailing data governance, formulas, and reporting specs.
-
----
-
-## 📈 Key Results at a Glance
-
-### 1. Commercial Property Reserving Summary
-
-| Accident Year | Latest Paid (£) | CDF to Ultimate | Projected Ultimate (£) | Required IBNR Reserve (£) | Ultimate Loss Ratio (%) |
-|---|---|---|---|---|---|
-| **2019** | £3,750,000 | 1.0000 | £3,750,000 | £0 | 75.0% |
-| **2020** | £3,900,000 | 1.0563 | £4,119,570 | £219,570 | 78.5% |
-| **2021** | £3,800,000 | 1.2014 | £4,565,320 | £765,320 | 83.0% |
-| **2022** | £3,050,000 | 1.6254 | £4,957,470 | £1,907,470 | 85.5% |
-| **2023** | £1,850,000 | 2.9478 | £5,453,430 | £3,603,430 | 89.4% |
-
-### 2. Loss Ratio Comparison
-
+### 2. Actuarial Reserving Loss Ratio Trends (ChainLadder vs. Bornhuetter-Ferguson)
 ![Loss Ratio Trends](outputs/loss_ratios_by_lob.png)
 
-- **Commercial Property:** Loss ratio escalated from **75.0% in 2019 to 89.4% in 2023**, driven by inflation in commercial repair costs and property claim severity.
-- **Private Motor:** Stable claims development with loss ratios ranging between **67.7% and 74.2%**, benefiting from shorter settlement tails.
+### 3. Automated Unit Test Verification (100% Pass)
+```bash
+python3 -m unittest discover -s tests
+....
+----------------------------------------------------------------------
+Ran 4 tests in 0.011s
+
+OK
+```
+
+---
+
+## 📊 Key Results & Executive Reserving Table
+
+### Commercial Property Reserving Summary
+
+| Accident Year | Latest Paid (£) | CDF to Ultimate | CL Ultimate (£) | CL IBNR Reserve (£) | BF Ultimate (£) | BF IBNR Reserve (£) | CL Loss Ratio (%) |
+|---|---|---|---|---|---|---|---|
+| **2019** | £3,750,000 | 1.0000 | £3,750,000 | £0 | £3,750,000 | £0 | 75.0% |
+| **2020** | £3,900,000 | 1.0563 | £4,119,570 | £219,570 | £4,110,000 | £210,000 | 78.5% |
+| **2021** | £3,800,000 | 1.2014 | £4,565,320 | £765,320 | £4,491,745 | £691,745 | 83.0% |
+| **2022** | £3,050,000 | 1.6254 | £4,957,470 | £1,907,470 | £4,723,961 | £1,673,961 | 85.5% |
+| **2023** | £1,850,000 | 2.9478 | £5,453,430 | £3,603,430 | £4,873,104 | £3,023,104 | 89.4% |
 
 ---
 
@@ -47,21 +48,18 @@ Raw Claims Feed (Accident & Dev Years)
  (Paid & Incurred Matrices)
               │
               ▼
- ChainLadder Development Engine
-  (LDF & Link Ratio Calculation)
-              │
-              ▼
-Ultimate Claims & IBNR Projection
-(Ultimate = Paid × CDF; IBNR = Ultimate - Paid)
+ Actuarial Reserving Engine
+ ├── ChainLadder (LDF & CDF Engine)
+ └── Bornhuetter-Ferguson (IELR Integration)
               │
               ▼
   Executive Reporting Output
-(Loss Ratios, CSV Summaries & Charts)
+(Loss Ratios, Interactive App & Charts)
 ```
 
 ---
 
-## 🚀 How to Run
+## 🚀 How to Run & Reproduce
 
 1. **Clone the repository:**
    ```bash
@@ -69,18 +67,18 @@ Ultimate Claims & IBNR Projection
    cd pc-claims-loss-reserving-analytics
    ```
 
-2. **Execute the Python Engine:**
+2. **Execute Python Engine & Tests:**
    ```bash
    python3 src/claims_analysis.py
+   python3 -m unittest discover -s tests
    ```
-   *Generates `outputs/reserving_summary.csv` and `outputs/loss_ratios_by_lob.png`.*
 
-3. **Explore Jupyter Walkthrough:**
+3. **Launch Interactive Streamlit Web Console:**
    ```bash
-   jupyter notebook notebooks/pc_claims_reserving_walkthrough.ipynb
+   streamlit run app.py
    ```
 
 ---
 
 ## 📜 Business Analysis Artifacts
-- **[docs/BRD.md](docs/BRD.md)** — Comprehensive Business Requirements Document, Data Dictionary, and Actuarial Formulas.
+- **[docs/BRD.md](docs/BRD.md)** — Comprehensive Business Requirements Document & Actuarial Formulas.
