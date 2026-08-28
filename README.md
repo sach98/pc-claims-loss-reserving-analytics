@@ -4,16 +4,20 @@ Loss development triangles, chain-ladder and Bornhuetter-Ferguson projections, a
 data-derived tail factor, and Mack (1993) reserve variability, across a Commercial
 Property and a Private Motor portfolio.
 
-> **Data notice.** The triangle in `data/` is **synthetic and illustrative**: 30 rows
-> covering two lines of business, accident years 2019 to 2023, development years 0 to 4.
-> It is deliberately smooth, which matters for interpretation (see
-> [Limitations](#limitations)). It is not a real book of business.
-
 **The reserving arithmetic is validated against an external benchmark.** The Mack
 standard-error implementation reproduces the published per-accident-year standard
 errors for the Taylor & Ashe (1983) triangle exactly, to the pound, in
 `tests/test_reserving.py::TestMackAgainstPublishedBenchmark`. That is an independent
-oracle rather than a self-consistency check.
+oracle rather than a self-consistency check: you can verify it without trusting me.
+
+![Commercial Property cumulative paid loss development triangle](outputs/claims_triangle_heatmap.png)
+
+> **Data notice.** The triangle above and every figure below it are **synthetic and
+> illustrative**: 30 rows covering two lines of business, accident years 2019 to 2023,
+> development years 0 to 4. It is deliberately smooth, which matters for interpretation
+> (see [Limitations](#limitations)). It is not a real book of business. The benchmark
+> reproduction is the exception, and it runs on Taylor & Ashe's own published triangle,
+> not on this data.
 
 ---
 
