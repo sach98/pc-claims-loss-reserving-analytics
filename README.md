@@ -10,6 +10,15 @@ errors for the Taylor & Ashe (1983) triangle exactly, to the pound, in
 `tests/test_reserving.py::TestMackAgainstPublishedBenchmark`. That is an independent
 oracle rather than a self-consistency check: you can verify it without trusting me.
 
+**And it agrees with an independently written implementation.**
+`tests/test_reserving_crosscheck.py` runs the same triangles through
+[`chainladder`](https://github.com/casact/chainladder-python), the CAS-supported
+open-source reserving library, and compares every published quantity. On both
+lines of business the age-to-age factors and the ultimates agree **bit for bit**,
+and the Mack standard errors agree to **six decimal places**. Two separately
+written programs, one of them not mine, produce the same numbers from the same
+data.
+
 ![Commercial Property cumulative paid loss development triangle](outputs/claims_triangle_heatmap.png)
 
 > **Data notice.** The triangle above and every figure below it are **synthetic and
@@ -20,6 +29,41 @@ oracle rather than a self-consistency check: you can verify it without trusting 
 > not on this data.
 
 ---
+
+### What the cross-check is, and what it is not
+
+It is **differential testing, not a second oracle.** `chainladder` implements the
+same published formulae, so agreement shows two programs compute the arithmetic
+identically. It does not validate chain ladder, Mack or Bornhuetter-Ferguson as
+methods and says nothing about whether their assumptions hold on this data. The
+external oracle here is still the figures Mack published; the cross-check covers
+a different class of bug, the kind that a hand calculation on one triangle would
+not catch.
+
+One disagreement is worth stating rather than burying under a setting. Left on
+its default `sigma_interpolation='log-linear'`, `chainladder` misses the
+published Taylor and Ashe figures by up to **3,700**, about 4.9% on the second
+accident year. Switched to `'mack'`, the rule Mack (1993) actually specifies for
+extrapolating the final development period's sigma, it lands within **0.49** of
+the published values, which is the identical residual this repository's own
+implementation achieves. So the two implementations and the paper all agree once
+the same convention is used, and the default difference is a convention choice
+rather than an error in either. A test pins the size of that gap, so a future
+version changing its default surfaces as a failure with the explanation attached.
+
+The cross-check is **optional and deliberately not in `requirements.txt`**.
+`chainladder` requires numpy 2; this repository pins `numpy==1.26.4` so that
+`matplotlib==3.6.2` reproduces the committed charts byte identically, and in one
+environment matplotlib then fails to import at all with
+`ImportError: numpy.core.multiarray failed to import`. It runs in its own
+environment and in its own CI job, and skips loudly rather than silently passing
+when the package is absent:
+
+```bash
+python3 -m venv .venv-crosscheck
+.venv-crosscheck/bin/pip install -r requirements-crosscheck.txt pytest
+.venv-crosscheck/bin/python -m pytest tests/test_reserving_crosscheck.py
+```
 
 ## Commercial Property reserving summary
 
@@ -170,4 +214,4 @@ streamlit run app.py
 
 ## Business analysis artifacts
 
-- **[docs/BRD.md](docs/BRD.md)** — requirements, formulas, and the traceability matrix.
+- **[docs/BRD.md](docs/BRD.md)**: requirements, formulas, and the traceability matrix.

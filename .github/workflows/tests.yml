@@ -32,3 +32,27 @@ jobs:
 
       - name: Run the test suite
         run: python -m pytest -q
+
+  # Separate job, separate environment, on purpose. chainladder needs numpy 2
+  # and requirements.txt pins numpy 1.26.4 so matplotlib 3.6.2 can render the
+  # committed charts; in one environment matplotlib stops importing entirely.
+  # Running the cross-check here means it is actually executed rather than
+  # skipped, which is the only way a skip stays honest.
+  crosscheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install the cross-check environment
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-crosscheck.txt
+          pip install pytest==9.1.1
+
+      - name: Cross-check the reserving engine against chainladder
+        run: python -m pytest -q tests/test_reserving_crosscheck.py
